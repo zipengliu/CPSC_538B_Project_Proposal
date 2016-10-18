@@ -42,3 +42,20 @@ but patterns emerge we will attempt to revise our visualization to
 better reflect the property. If no alternative visualizations
 demonstrate the irregularity, we will refine our $diff$ function to be
 more specific to Ricart-Agrawala's state variables.
+
+To visualize the transitional states, we need to first abstract the 
+data and task, according to Munzner's nested model ~\cite{munzner2009nested}.
+The original raw data to visualize can be regarded as a two dimensional 
+spreadsheet, where each row represent a distributed state (variable),
+ each column a snapshot and each cell the value of the variable at
+ that particular snapshot.  The data type of the value is flexible,
+ be it number, string, array or complicated dictionary.
+However, there is little to do with this raw data if we do not derive
+simplified data or transform it.  The way to do it actually depends on 
+the transitional function we will experiment and concrete questions we
+would like to answer with the visualization.  For example, if users want
+to know the degree of change between snapshots, we can use the XOR function
+to reduce each column (a vector of states at a snapshot) to a number,
+whose difference is easily perceived when shown in a line chart.
+It is yet early to talk about how kind of visual encoding to use before
+we have a better understanding of the data and task.
