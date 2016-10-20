@@ -1,47 +1,51 @@
 \section{Proposed Approach}
 \label{sec:proposed-approach}
 
-Out goal is to visualize distributed state in a comprehensive way to
+Our goal is to visualize distributed state in a comprehensive way to
 provide developers with an intuition about faulty behaviour. In order
 to capture distributed state through variable logging, and the
 aggregation of individual node state, we will leverage \dinv, a tool
 for detecting likely data invariants in distributed
-systems~\cite{dinv}.
+systems~\cite{dinv}. \dinv analyzes the logs of distributed systems, and computes the set of consistent cuts. Node states are grouped together by consistent cuts. The input to \dviz will be the partially ordered set of states computed by \dinv.
 
 Distributed state is inherently complex. In its raw form it consists
 of partially ordered instances of variable values. This raw data is
-classically hard to reason about. In order to convey distributed state
-to a developer it must be summarized. We propose that the behaviour of
+classically hard to reason about. To convey distributed state
+to a developer it must be summarized. We propose that the state of
 a distributed system under correct execution follows predicable
 patters. Further that these patters are reflected the systems state.
 The first contribution that our project seeks to make is a state
 transition function $diff$ which measures the difference between
 instances of distributed state. We recognize that many functions for
-measuring state transitions could exist, our goal is to identify a
-$diff$ function which is sensitive to state transitions, and is
-normalized during repetitious behaviour.
+measuring state transitions could exist, our goal is to identify a general
+$diff$ function which is sensitive to state transitions. An ideal $diff$ function would respond to state transitions predictably, and change minimally during repetitious behaviour.
 
 Our initial approach will be to measure state transitions as the XOR
 difference between variables in separate instances of distributed
-state. We formalize the state $\sigma$ of a system to be a vector of
-variables $V = {v_1,v_2,\dots,v_n}$. The XOR difference between two
+state. We represent the state $\sigma$ of a system as a vector of
+values $V = {v_1,v_2,\dots,v_n}$. The XOR difference between two
 states $\sigma_i$ and $\sigma_j$ is $XOR(V_i,V_j)$. The resulting
-vector contains an indices for the XOR difference between each
-variable. The vector itself is $n$ dimensional and represents the XOR
-velocity of the systems state. To measure the effectiveness of our
+vector contains an index for the XOR difference between each
+variable value. The vector itself is $n$ dimensional and represents the XOR
+difference of the systems state. The magnitude of this vector is the cange in distributed state. To measure the effectiveness of our
 $diff$ function, we will initially plot its output as a simple line
 graph and check if predictable repetitions patters emerge between
 executions.  Furthermore, we plan to plot the first and second order
-derivatives of $diff$, $diff'$ and $diff''$ respectively to determine
+derivatives of $diff$, to determine
 if they also exhibit predictable patters. Initially we will try to
-detect patterns in Ricart-Agrawala. If predictable patters emerge we
-introduce a bug which causes the algorithm to violate mutual
-exclusion. If predictable patterns emerge we will expand our research
-into larger more general system. If the difference is not noticeable
-but patterns emerge we will attempt to revise our visualization to
-better reflect the property. If no alternative visualizations
-demonstrate the irregularity, we will refine our $diff$ function to be
-more specific to Ricart-Agrawala's state variables.
+detect patterns in toy systems. 
+
+
+\begin{figure}[t]
+    \includegraphics[width=0.50\textwidth]{fig/plot}
+    \caption{\textbf{\dviz graph of a client-proxy-server interaction}}
+\label{fig:plot} 
+\end{figure}
+
+To motivate the potential of the XOR function we constructed a prototype of \dviz. The prototype takes distributed state snapshots, derived by \dinv and outputs a line graph of each hosts state. Figure~\ref{fig:plot} was produced by graphing the states of 3 nodes configured as a client, a proxy, and a server which compute a linear formula. The value of all variable on each node were logged during the execution of the system, we made no attempt to track variable specific to the linear formula. We recognize that the prototype visualization is incomprehensible. However, there is a clearly visible correlation between the behaviour of the nodes, which repeats in a predictable pattern. Our initial findings suggest that XOR can be used to capture aspects of state transitions.
+
+XOR may produce a predictable output, but it lacks a direct correlation to the developers understanding of the systems state transition. An alternative to XOR is to allow the user to specify a subset of variables, and encode the set of states they posses. For example, the user could specify that if a boolean variable \textit{leader} is true than a node is a leader of a Raft cluster, if false it is either a follower or a candidate. Transitions in the state's of variable can be modeled as distributed finite state automata, which have a large set of visual encodings~\cite{DBLP:journals/corr/abs-1110-4161}.
+
 
 To visualize the transitional states, we need to first abstract the 
 data and task, according to Munzner's nested model ~\cite{munzner2009nested}.
